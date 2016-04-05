@@ -1,11 +1,12 @@
 package gui;
 
+import database.Database;
+
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Implement shiny cookie stuffs
-		System.out.println("COOOKIE!!!");
-
+		Database db = new Database();
+		new CookieGUI(db);
 	}
 
 }
