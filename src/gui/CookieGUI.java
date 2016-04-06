@@ -33,9 +33,12 @@ public class CookieGUI {
 	public CookieGUI(Database db) {
 		this.db = db;
 
-		JFrame frame = new JFrame("MovieBooking");
+		JFrame frame = new JFrame("Cookies!");
 		tabbedPane = new JTabbedPane();
-/*
+		
+		ProductionPane pp = new ProductionPane(db);
+		tabbedPane.addTab("Placeholder", null, pp, "Placeholder tooltip");
+
 		UserLoginPane userLoginPane = new UserLoginPane(db);
 		tabbedPane.addTab("User login", null, userLoginPane,
 				"Log in as a new user");
@@ -54,15 +57,15 @@ public class CookieGUI {
 		frame.setVisible(true);
 
 		userLoginPane.displayMessage("Connecting to database ...");
-		*/
+		
 		/* --- change code here --- */
 		/* --- change xxx to your user name, yyy to your password --- */
 		if (db.openConnection("db08", "zartacus")) {
-			System.out.println("Yay!");
-		//	userLoginPane.displayMessage("Connected to database");
+			//System.out.println("Yay!");
+			userLoginPane.displayMessage("Connected to database");
 		} else {
-			System.out.println("nooooooo");
-		//	userLoginPane.displayMessage("Could not connect to database");
+			//System.out.println("nooooooo");
+			userLoginPane.displayMessage("Could not connect to database");
 		}
 	}
 
