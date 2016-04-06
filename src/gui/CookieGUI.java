@@ -35,16 +35,12 @@ public class CookieGUI {
 
 		JFrame frame = new JFrame("Cookies!");
 		tabbedPane = new JTabbedPane();
+
+		ProductionPane productionPane = new ProductionPane(db);
+		tabbedPane.addTab("Production", null, productionPane, "This is where you can add a new pallet.");
 		
-		ProductionPane pp = new ProductionPane(db);
-		tabbedPane.addTab("Placeholder", null, pp, "Placeholder tooltip");
-
-		UserLoginPane userLoginPane = new UserLoginPane(db);
-		tabbedPane.addTab("User login", null, userLoginPane,
-				"Log in as a new user");
-
-		BookingPane bookingPane = new BookingPane(db);
-		tabbedPane.addTab("Book ticket", null, bookingPane, "Book a ticket");
+		PalletPane palletPane = new PalletPane(db);
+		tabbedPane.addTab("Pallets", null, palletPane, "Here you can search through existing pallets, block pallets and unblock them again.");
 
 		tabbedPane.setSelectedIndex(0);
 
@@ -55,17 +51,15 @@ public class CookieGUI {
 
 		frame.setSize(500, 400);
 		frame.setVisible(true);
-
-		userLoginPane.displayMessage("Connecting to database ...");
 		
 		/* --- change code here --- */
 		/* --- change xxx to your user name, yyy to your password --- */
 		if (db.openConnection("db08", "zartacus")) {
 			//System.out.println("Yay!");
-			userLoginPane.displayMessage("Connected to database");
+			productionPane.displayMessage("Connected to database");
 		} else {
 			//System.out.println("nooooooo");
-			userLoginPane.displayMessage("Could not connect to database");
+			productionPane.displayMessage("Could not connect to database");
 		}
 	}
 
