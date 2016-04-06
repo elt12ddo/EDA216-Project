@@ -11,7 +11,7 @@ public class Database {
 	 * The database connection.
 	 */
 	private Connection conn;
-
+	
 	/**
 	 * Create the database interface object. Connection to the database is
 	 * performed later.

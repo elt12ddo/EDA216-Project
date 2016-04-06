@@ -44,9 +44,9 @@ public class ProductionPane extends BasicPane{
 		JScrollPane p2 = new JScrollPane(dateList);
 
 		JPanel p = new JPanel();
-		p.setLayout(new GridLayout(1, 2));
+		p.setLayout(new GridLayout(1, 1));
 		p.add(p1);
-		p.add(p2);
+		//p.add(p2);
 		return p;
 	}
 	
@@ -58,7 +58,6 @@ public class ProductionPane extends BasicPane{
 		fields = new JTextField[2];
 		for (int i = 0; i < fields.length; i++) {
 			fields[i] = new JTextField(20);
-			fields[i].setEditable(false);
 		}
 
 		JPanel input = new InputPanel(texts, fields);
@@ -78,13 +77,12 @@ public class ProductionPane extends BasicPane{
 	}
 	
 	public JComponent createBottomPanel() {
-	/*
+	
 		JButton[] buttons = new JButton[1];
-		buttons[0] = new JButton("Login");
+		buttons[0] = new JButton("Search");
 		ActionHandler actHand = new ActionHandler();
-		fields[USER_ID].addActionListener(actHand);/
-		return new ButtonAndMessagePanel(buttons, messageLabel, actHand);/*/
-		return new JLabel("Hej");
+		fields[USER_ID].addActionListener(actHand);
+		return new ButtonAndMessagePanel(buttons, messageLabel, actHand);
 	}
 	
 	class NameSelectionListener implements ListSelectionListener {
@@ -134,6 +132,7 @@ public class ProductionPane extends BasicPane{
 		 *            The event object (not used).
 		 */
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("Do something with: " + fields[0].getText() + " and " + fields[1].getText());
 			//String userId = fields[USER_ID].getText();
 			/* --- insert own code here --- */
 		}
