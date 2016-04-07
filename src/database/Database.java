@@ -71,5 +71,22 @@ public class Database {
 	}
 
 	/* --- insert own code here --- */
+	
+	// Methods created for the ProductionPane
+	public String[] getCookieTypes(){ //Used to get the different cookie types available for the production of new pallets
+		String[] strings = {"Aaron", "Bbron","Ccron","Ddron","Eeron"};
+		return strings;
+	}
+	public void createPallet(String cookieType){ //Obviously used by a listener in ProductionPane to create new pallets
+		System.out.println("Create pallet with " + cookieType + " cookies.");
+		//Add new pallet, should the database have add time and date of production or should it be created here?
+		//Remove ingredients here, or should we use a separate method to affect the ingredients?
+	}
+	public void deductIngredients(String cookieType){ //If used as a help method to createPallets change visibility to private.
+		//Ask table Recipe for all tuples with cookieType as cookieType
+		//Loop through the results and deduct amount for each ingredient in the Ingredients table (might need to fetch the amount of ingredients first though)
+	}
+	//Methods created for the PalletPane
 
+	//Where the ProductionPane seem crystal clear how it should work, the PalletPane could use some more discussion.
 }
