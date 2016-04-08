@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Database is a class that specifies the interface to the movie database. Uses
@@ -74,19 +75,60 @@ public class Database {
 	
 	// Methods created for the ProductionPane
 	public String[] getCookieTypes(){ //Used to get the different cookie types available for the production of new pallets
-		String[] strings = {"Aaron", "Bbron","Ccron","Ddron","Eeron"};
-		return strings;
+		ArrayList<String> cookieList = new ArrayList<String>();
+		try {
+			PreparedStatement prepState = conn.prepareStatement("SELECT cookieType FROM Cookie");
+			ResultSet set = prepState.executeQuery();
+			while(set.next()){
+				cookieList.add(set.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cookieList.toArray(new String[0]);//This is an hack, if I give it null it will crash, if I use toArray without a parameter it can not cast to a String[] and will crash. If it receives an array that is too small it creates a new array instead (why the method without parameter can not do this I do not know, although it could be that a generic class cannot create the correct type of array).
 	}
-	public void createPallet(String cookieType){ //Obviously used by a listener in ProductionPane to create new pallets
-		System.out.println("Create pallet with " + cookieType + " cookies.");
+	public boolean createPallet(String cookieType){ //Obviously used by a listener in ProductionPane to create new pallets
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement createPalletStatement = conn.prepareStatement("INSERT INTO Pallet (cookieType) values(?)");
+			createPalletStatement.setString(1,cookieType);
+			createPalletStatement.executeUpdate();
+			//Add DEFAULT getDate() to date in the database, could probably be done for the time also, which means that I will omit these here.
+			//location & status should probably also have default values instead of setting them here. This leaves me with cookieType.
+			
+			PreparedStatement fetchRecipeStatement = conn.prepareStatement("SELECT ingredientName, amount FROM Recipe WHERE cookieType = ?");
+			fetchRecipeStatement.setString(1, cookieType);
+			ResultSet ingredientSet = fetchRecipeStatement.executeQuery();
+			while(ingredientSet.next()){
+				PreparedStatement setIngredientStatement = conn.prepareStatement("UPDATE Ingredient SET amountInStock = amountInStock - ? WHERE ingredientName = ?");
+				setIngredientStatement.setInt(1, ingredientSet.getInt(2));
+				setIngredientStatement.setString(2, ingredientSet.getString(1));
+				setIngredientStatement.executeUpdate();
+			}
+			
+			PreparedStatement checkStockStatement = conn.prepareStatement("SELECT ingredientName FROM Ingredient WHERE amountInStock < 0");
+			if(checkStockStatement.executeQuery().next()){
+				conn.rollback();
+				return false;
+			} else {
+				conn.setAutoCommit(true);
+				return true;
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		//Add new pallet, should the database have add time and date of production or should it be created here?
 		//Remove ingredients here, or should we use a separate method to affect the ingredients?
+		return false;
 	}
 	public void deductIngredients(String cookieType){ //If used as a help method to createPallets change visibility to private.
 		//Ask table Recipe for all tuples with cookieType as cookieType
 		//Loop through the results and deduct amount for each ingredient in the Ingredients table (might need to fetch the amount of ingredients first though)
 	}
 	//Methods created for the PalletPane
+
 
 	//Where the ProductionPane seem crystal clear how it should work, the PalletPane could use some more discussion.
 }

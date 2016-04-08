@@ -32,6 +32,7 @@ public class CookieGUI {
 	 */
 	public CookieGUI(Database db) {
 		this.db = db;
+		boolean connected = db.openConnection("db08", "zartacus");
 
 		JFrame frame = new JFrame("Cookies!");
 		tabbedPane = new JTabbedPane();
@@ -54,7 +55,7 @@ public class CookieGUI {
 		
 		/* --- change code here --- */
 		/* --- change xxx to your user name, yyy to your password --- */
-		if (db.openConnection("db08", "zartacus")) {
+		if (connected) {
 			//System.out.println("Yay!");
 			productionPane.displayMessage("Connected to database");
 		} else {

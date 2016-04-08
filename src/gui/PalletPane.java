@@ -2,11 +2,9 @@ package gui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
-
 import database.Database;
 
 public class PalletPane extends BasicPane{
@@ -167,5 +165,3 @@ public class PalletPane extends BasicPane{
 		}
 	}
 }
-
-

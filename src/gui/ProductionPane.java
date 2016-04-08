@@ -3,7 +3,6 @@ package gui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,7 +17,6 @@ public class ProductionPane extends BasicPane {
 	
 	public ProductionPane(Database db) {
 		super(db);
-		optionList = new JComboBox<String>(db.getCookieTypes()); // Because I prefer to create global things in the constructor to be sure that we don't get strange nullpointers.
 	}
 	
 	public JComponent createTopPanel(){
@@ -27,6 +25,7 @@ public class ProductionPane extends BasicPane {
 		p1.add(new JLabel("Create new pallets:"));
 		
 		JPanel p2 = new JPanel();
+		//Could check with db.isConnected(); but what should I do if it is not connected, nothing should work properly anyway in that case.
 		optionList = new JComboBox<String>(db.getCookieTypes()); // Global, DO NOT CREATE IN THE CONSTRUCTOR IT WILL CAUSE NULLPOINTER (super is always called first, so this would execute before anything in the constructor).
 		optionList.addActionListener(new OptionListHandler());
 		
@@ -39,10 +38,10 @@ public class ProductionPane extends BasicPane {
 		return p;
 		//return new JLabel("FML");
 	}
-	
+
 	public JComponent createBottomPanel() {
 		JButton button = new JButton("Produce pallet");
-		return new ButtonAndMessagePanel(button, messageLabel, new ProducePalletHandler(optionList));
+		return new ButtonAndMessagePanel(button, messageLabel, new ProducePalletHandler(optionList,this));
 	}
 	
 	class OptionListHandler implements ActionListener {
@@ -56,13 +55,20 @@ public class ProductionPane extends BasicPane {
 	
 	class ProducePalletHandler implements ActionListener {
 		JComboBox<String> comboBox; //DO NOT CREATE A NEW OPTIONLIST IN PRODUCTIONPANE, update the OptionList instead or I will have to implement a method to update this and call it every time we want to update the selection.
+		ProductionPane pPane;
 		
-		public ProducePalletHandler(JComboBox<String> comboBox){
+		public ProducePalletHandler(JComboBox<String> comboBox, ProductionPane pPane){
 			this.comboBox = comboBox;
+			this.pPane = pPane;
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			db.createPallet(String.valueOf(comboBox.getSelectedItem()));
+			String cookie = String.valueOf(comboBox.getSelectedItem());
+			if(db.createPallet(cookie)){
+				pPane.displayMessage("A new pallet with " + cookie + " cookies has been added to the database.");
+			} else {
+				pPane.displayMessage("The pallet with " + cookie + " could not be added to the database.");
+			}
 		}
 	}
 }
