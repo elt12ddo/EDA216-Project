@@ -31,10 +31,10 @@ palletId INT PRIMARY KEY AUTO_INCREMENT,
 date DATE,
 time TIME,
 orderId INT,
-location INT,
+location INT DEFAULT 0,
 dateDelivered DATE,
-cookieType VARCHAR(30),
-status BOOLEAN,
+cookieType VARCHAR(30) NOT null,
+status BOOLEAN DEFAULT false,
 FOREIGN KEY (cookieType) REFERENCES Cookie(cookieType),
 FOREIGN KEY (orderId) REFERENCES COrder(orderId)
 );
@@ -67,21 +67,33 @@ FOREIGN KEY (ingredientName) REFERENCES Ingredient(ingredientName)
 
 # Insert Customers:
 INSERT INTO Customer(name, address) values('Kakmonster AB', 'Kakmonstergatan 1');
+INSERT INTO Customer(name, address) values('Zombiegott AB', 'levandedödgatan 10');
+INSERT INTO Customer(name, address) values('Kakmonster AB', 'Kakmonstergatan 1');
 
 # Insert Cookies:
 INSERT INTO Cookie values('Monsterkaka');
+INSERT INTO Cookie values('Zombiekaka');
+INSERT INTO Cookie values('Ben-pinne');
 
 # Insert Orders:
 INSERT INTO COrder(deliveryDate, customerId) values('3500-01-01', 1);
 
 # Insert Pallet:
-INSERT INTO Pallet(date, time, orderId, location, dateDelivered, cookieType, status) values('1500-01-01','23:59',null,0,null,'Monsterkaka',0);
+INSERT INTO Pallet(date, time, orderId, dateDelivered, cookieType) values('2016-01-01','14:00',null,null,'Monsterkaka');
+INSERT INTO Pallet(date, time, orderId, dateDelivered, cookieType) values('2016-02-01','15:00',null,null,'Zombiekaka');
+INSERT INTO Pallet(date, time, orderId, dateDelivered, cookieType) values('2016-03-01','16:00',null,null,'Ben-pinne');
+INSERT INTO Pallet(date, time, orderId, dateDelivered, cookieType) values('2016-04-01','17:00',null,null,'Monsterkaka');
 
 # Insert Ingredient:
-INSERT INTO Ingredient values('Monsterdelar',120,'1100-07-03',500);
+INSERT INTO Ingredient values('Monsterdelar',400,'2015-07-03',500);
+INSERT INTO Ingredient values('Hjärna',200,'2015-10-20',200);
+INSERT INTO Ingredient values('Ben',150,'2015-12-15',200);
 
 # Insert CookieInOrder:
 INSERT INTO CookieInOrder values(1,'Monsterkaka');
 
 # Insert Recipe:
-INSERT INTO Recipe values('Monsterkaka','Monsterdelar', 100);
+INSERT INTO Recipe values('Monsterkaka','Monsterdelar', 50);
+INSERT INTO Recipe values('Zombiekaka','Hjärna', 10);
+INSERT INTO Recipe values('Zombiekaka','Monsterdelar', 30);
+INSERT INTO Recipe values('Ben-pinne','Ben', 60);
