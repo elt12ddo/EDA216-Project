@@ -3,6 +3,8 @@ package database;
 import java.sql.*;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+
 /**
  * Database is a class that specifies the interface to the movie database. Uses
  * JDBC and the MySQL Connector/J driver.
@@ -70,11 +72,9 @@ public class Database {
 	public boolean isConnected() {
 		return conn != null;
 	}
-
-	/* --- insert own code here --- */
 	
-	// Methods created for the ProductionPane
-	public String[] getCookieTypes(){ //Used to get the different cookie types available for the production of new pallets
+	//Common Methods
+	public String[] getCookieTypes(){
 		ArrayList<String> cookieList = new ArrayList<String>();
 		try {
 			PreparedStatement prepState = conn.prepareStatement("SELECT cookieType FROM Cookie");
@@ -85,16 +85,17 @@ public class Database {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return cookieList.toArray(new String[0]);//This is an hack, if I give it null it will crash, if I use toArray without a parameter it can not cast to a String[] and will crash. If it receives an array that is too small it creates a new array instead (why the method without parameter can not do this I do not know, although it could be that a generic class cannot create the correct type of array).
+		return cookieList.toArray(new String[0]);
 	}
-	public boolean createPallet(String cookieType){ //Obviously used by a listener in ProductionPane to create new pallets
+	//Methods created for the ProductionPane
+	public boolean createPallet(String cookieType){
 		try {
 			conn.setAutoCommit(false);
-			PreparedStatement createPalletStatement = conn.prepareStatement("INSERT INTO Pallet (cookieType) values(?)");
-			createPalletStatement.setString(1,cookieType);
+			PreparedStatement createPalletStatement = conn.prepareStatement("INSERT INTO Pallet (date, time, cookieType) values(?,?,?)");
+			createPalletStatement.setDate(1, new Date(System.currentTimeMillis()));
+			createPalletStatement.setTime(2, new Time(System.currentTimeMillis()));
+			createPalletStatement.setString(3,cookieType);
 			createPalletStatement.executeUpdate();
-			//Add DEFAULT getDate() to date in the database, could probably be done for the time also, which means that I will omit these here.
-			//location & status should probably also have default values instead of setting them here. This leaves me with cookieType.
 			
 			PreparedStatement fetchRecipeStatement = conn.prepareStatement("SELECT ingredientName, amount FROM Recipe WHERE cookieType = ?");
 			fetchRecipeStatement.setString(1, cookieType);
@@ -114,21 +115,88 @@ public class Database {
 				conn.setAutoCommit(true);
 				return true;
 			}
-			
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//Add new pallet, should the database have add time and date of production or should it be created here?
-		//Remove ingredients here, or should we use a separate method to affect the ingredients?
 		return false;
 	}
-	public void deductIngredients(String cookieType){ //If used as a help method to createPallets change visibility to private.
-		//Ask table Recipe for all tuples with cookieType as cookieType
-		//Loop through the results and deduct amount for each ingredient in the Ingredients table (might need to fetch the amount of ingredients first though)
-	}
 	//Methods created for the PalletPane
-
-
-	//Where the ProductionPane seem crystal clear how it should work, the PalletPane could use some more discussion.
+	public DefaultListModel<String> fetchPallets(String date1, String date2, String cookieType){
+		DefaultListModel<String> palletList = new DefaultListModel<String>();
+		try {
+			PreparedStatement fetchPallets;
+			if(cookieType.compareTo("All") == 0){
+				fetchPallets = conn.prepareStatement("SELECT palletId FROM Pallet WHERE date >= ? AND date <= ?");
+			} else {
+				fetchPallets = conn.prepareStatement("SELECT palletId FROM Pallet WHERE date >= ? AND date <= ? AND cookieType = ?");
+				fetchPallets.setString(3, cookieType);
+			}
+			fetchPallets.setString(1, date1);
+			fetchPallets.setString(2, date2);
+			ResultSet palletSet = fetchPallets.executeQuery();
+			
+			while(palletSet.next()){
+				palletList.addElement(palletSet.getString(1));
+			}
+			return palletList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return palletList;
+	}
+	public String[] getPalletData(String palletId){
+		String[] palletData = new String[7];
+		try {
+			PreparedStatement statement = conn.prepareStatement("SELECT date, time, orderId, location, dateDelivered, cookieType, status FROM Pallet WHERE palletId = ?");
+			statement.setString(1, palletId);			
+			ResultSet palletSet = statement.executeQuery();
+			
+			palletSet.next();
+			for(int k = 1; k <= 7; k++){
+				palletData[k-1] = palletSet.getString(k);
+			}
+			
+			setLocationData(palletData);
+			if(palletData[6].compareTo("0") == 0){
+				palletData[6] = "Not blocked";
+			} else {
+				palletData[6] = "Blocked";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return palletData;
+	}
+	private void setLocationData(String[] palletData) {
+		if(palletData[3].compareTo("0") == 0){
+			palletData[3] = "In storage";
+		} else if(palletData[3].compareTo("1") == 0){
+			palletData[3] = "In transit";
+		} else if(palletData[3].compareTo("2") == 0){
+			palletData[3] = "Delivered";
+		}
+	}
+	public boolean setBlocked(String palletId, boolean block){
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement statement = conn.prepareStatement("UPDATE Pallet SET status = ? WHERE palletId = ?");
+			statement.setBoolean(1, block);
+			statement.setString(2, palletId);
+			statement.executeUpdate();
+			
+			PreparedStatement checkBlock = conn.prepareStatement("SELECT status FROM Pallet WHERE palletId = ?");
+			checkBlock.setString(1, palletId);
+			ResultSet result = checkBlock.executeQuery();
+			result.next();
+			if(result.getBoolean(1) != block){
+				conn.rollback();
+				return false;
+			}
+			conn.setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
