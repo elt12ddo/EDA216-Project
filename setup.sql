@@ -50,6 +50,7 @@ latestAmountDelivered INT
 CREATE TABLE CookieInOrder(
 orderId INT,
 cookieType VARCHAR(30),
+amount INT,
 PRIMARY KEY (orderId, cookieType),
 FOREIGN KEY (orderId) REFERENCES COrder(orderId),
 FOREIGN KEY (cookieType) REFERENCES Cookie(cookieType)
@@ -90,7 +91,7 @@ INSERT INTO Ingredient values('Hjärna',200,'2015-10-20',200);
 INSERT INTO Ingredient values('Ben',150,'2015-12-15',200);
 
 # Insert CookieInOrder:
-INSERT INTO CookieInOrder values(1,'Monsterkaka');
+INSERT INTO CookieInOrder values(1,'Monsterkaka',5);
 
 # Insert Recipe:
 INSERT INTO Recipe values('Monsterkaka','Monsterdelar', 50);
