@@ -94,12 +94,6 @@ public class BasicPane extends JPanel {
     }
         
     /**
-     * Perform the entry actions of the pane. Empty here, should be
-     * overridden by subclasses.
-     */
-    public void entryActions() {}
-        
-    /**
      * Display a message.
      *
      * @param msg The message to display.

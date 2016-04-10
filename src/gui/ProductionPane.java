@@ -25,7 +25,6 @@ public class ProductionPane extends BasicPane {
 		p1.add(new JLabel("Create new pallets:"));
 		
 		JPanel p2 = new JPanel();
-		//Could check with db.isConnected(); but what should I do if it is not connected, nothing should work properly anyway in that case.
 		optionList = new JComboBox<String>(db.getCookieTypes());
 		p2.add(optionList);
 		
@@ -41,7 +40,7 @@ public class ProductionPane extends BasicPane {
 		return new ButtonAndMessagePanel(button, messageLabel, new ProducePalletHandler());
 	}
 	
-	class ProducePalletHandler implements ActionListener {
+	private class ProducePalletHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String cookie = String.valueOf(optionList.getSelectedItem());
 			if(db.createPallet(cookie)){

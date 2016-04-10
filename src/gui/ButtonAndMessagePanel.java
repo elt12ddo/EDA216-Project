@@ -15,8 +15,8 @@ public class ButtonAndMessagePanel extends JPanel {
 	 * Create the component with the specified buttons and message line, and
 	 * also an action listener for the buttons.
 	 * 
-	 * @param buttons
-	 *            The array of buttons.
+	 * @param button
+	 *            The button.
 	 * @param messageLine
 	 *            The message line.
 	 * @param actHand
@@ -34,14 +34,14 @@ public class ButtonAndMessagePanel extends JPanel {
 
 	/**
 	 * Create the component with the specified buttons and message line, and
-	 * also an action listener for the buttons.
+	 * also an action listener for buttons each of the buttons.
 	 * 
 	 * @param buttons
 	 *            The array of buttons.
 	 * @param messageLine
 	 *            The message line.
 	 * @param actHand
-	 *            The action listener for the buttons.
+	 *            The array of action listeners for the buttons.
 	 */
 	public ButtonAndMessagePanel(JButton[] buttons, JLabel messageLine,
 			ActionListener[] actionHandlers) {

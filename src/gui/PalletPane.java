@@ -60,7 +60,6 @@ public class PalletPane extends BasicPane{
 		searchPanel.add(searchButton);
 		searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.Y_AXIS));
 		
-
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		p.add(p1);
@@ -108,13 +107,13 @@ public class PalletPane extends BasicPane{
 	/**
 	 * Fetch pallet id from the database and display them in the pallet list.
 	 */
-	public void fillPalletList(String date1, String date2, String cookieType) {
+	private void fillPalletList(String date1, String date2, String cookieType) {
 		palletListModel.removeAllElements();
 		palletListModel = db.fetchPallets(date1, date2, cookieType);
 		palletList.setModel(palletListModel);
 	}
 	
-	public void updateFields(){
+	private void updateFields(){
 		if (palletList.isSelectionEmpty()) {
 			return;
 		}
@@ -127,48 +126,24 @@ public class PalletPane extends BasicPane{
 		}
 	}
 
-	class PalletSelectionListener implements ListSelectionListener {
-		/**
-		 * Called when the user selects a name in the date list. Fetches
-		 * performance data from the database and displays it in the text
-		 * fields.
-		 * 
-		 * @param e
-		 *            The selected list item.
-		 */
+	private class PalletSelectionListener implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e) {
 			updateFields();
 		}
 	}
 	
-	class SearchHandler implements ActionListener {
+	private class SearchHandler implements ActionListener {
 		private JComboBox<String> comboBox;
-		public SearchHandler(JComboBox<String> comboBox){
+		private SearchHandler(JComboBox<String> comboBox){
 			this.comboBox = comboBox;
 		}
-		/**
-		 * Called when the user clicks the login button. Checks with the
-		 * database if the user exists, and if so notifies the CurrentUser
-		 * object.
-		 * 
-		 * @param e
-		 *            The event object (not used).
-		 */
 		public void actionPerformed(ActionEvent e) {
 			fillPalletList(searchFields[0].getText(), searchFields[1].getText(), String.valueOf(comboBox.getSelectedItem()));
 			displayMessage("Search complete, " + palletListModel.size() + " pallets found.");
 		}
 	}
 	
-	class BlockHandler implements ActionListener {
-		/**
-		 * Called when the user clicks the login button. Checks with the
-		 * database if the user exists, and if so notifies the CurrentUser
-		 * object.
-		 * 
-		 * @param e
-		 *            The event object (not used).
-		 */
+	private class BlockHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String palletId = palletList.getSelectedValue();
 			if(palletList.isSelectionEmpty()){
@@ -183,15 +158,7 @@ public class PalletPane extends BasicPane{
 		}
 	}
 	
-	class UnblockHandler implements ActionListener {
-		/**
-		 * Called when the user clicks the login button. Checks with the
-		 * database if the user exists, and if so notifies the CurrentUser
-		 * object.
-		 * 
-		 * @param e
-		 *            The event object (not used).
-		 */
+	private class UnblockHandler implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String palletId = palletList.getSelectedValue();
 			if(palletList.isSelectionEmpty()){

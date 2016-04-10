@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
 /**
- * Database is a class that specifies the interface to the movie database. Uses
+ * Database is a class that specifies the interface to the cookie database. Uses
  * JDBC and the MySQL Connector/J driver.
  */
 public class Database {
