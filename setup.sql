@@ -69,7 +69,7 @@ FOREIGN KEY (ingredientName) REFERENCES Ingredient(ingredientName)
 # Insert Customers:
 INSERT INTO Customer(name, address) values('Kakmonster AB', 'Kakmonstergatan 1');
 INSERT INTO Customer(name, address) values('Zombiegott AB', 'levandedödgatan 10');
-INSERT INTO Customer(name, address) values('Kakmonster AB', 'Kakmonstergatan 1');
+INSERT INTO Customer(name, address) values('Kakmuncher AB', 'Kakmonstergatan 2');
 
 # Insert Cookies:
 INSERT INTO Cookie values('Monsterkaka');
